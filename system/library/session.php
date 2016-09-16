@@ -30,6 +30,26 @@ class Session {
 			session_start();
 		}			
 	}
+        
+        /**
+         * 
+         * @param string $key
+         * @return mixed
+         */
+        public function get($key)
+        {
+            return isset($this->data[$key]) ? $this->data[$key] : null;
+        }
+        
+        /**
+         * 
+         * @param string $key
+         * @param mixed $value
+         */
+        public function set($key, $value)
+        {
+            $this->data[$key] = $value;
+        }
 		
 	public function start($key = 'default', $value = '') {
 		if ($value) {
