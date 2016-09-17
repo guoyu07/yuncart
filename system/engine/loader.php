@@ -118,7 +118,7 @@ final class Loader
                 $template->set($key, $value);
             }
 
-            $output = $template->render($route . '.tpl');
+            $output = $template->render($route . '.php');
         }
 
         // Trigger the post events
