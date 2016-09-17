@@ -136,9 +136,7 @@ class ControllerStartupStartup extends Controller {
 		
 		$currencies = $this->model_localisation_currency->getCurrencies();
 		
-		if (isset($this->session->data['currency'])) {
-			$code = $this->session->data['currency'];
-		}
+		$code = $this->session->get('currency');
 		
 		if (isset($this->request->cookie['currency']) && !array_key_exists($code, $currencies)) {
 			$code = $this->request->cookie['currency'];
