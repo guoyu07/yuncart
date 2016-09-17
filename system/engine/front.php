@@ -1,48 +1,66 @@
 <?php
-final class Front {
-	private $registry;
-	private $pre_action = array();
-	private $error;
 
-	public function __construct($registry) {
-		$this->registry = $registry;
-	}
-	
-	public function addPreAction(Action $pre_action) {
-		$this->pre_action[] = $pre_action;
-	}
-	
-	public function dispatch(Action $action, Action $error) {
-		$this->error = $error;
+/**
+ * 前端调度器
+ */
+final class Front
+{
+    /**
+     *
+     * @var Registry 容器 
+     */
+    private $registry;
+    private $pre_actions = [];
+    private $error;
 
-		foreach ($this->pre_action as $pre_action) {
-			$result = $this->execute($pre_action);
+    /**
+     *
+     * @var Registry $registry 容器 
+     */
+    public function __construct($registry)
+    {
+        $this->registry = $registry;
+    }
 
-			if ($result instanceof Action) {
-				$action = $result;
+    public function addPreAction(Action $pre_action)
+    {
+        $this->pre_actions[] = $pre_action;
+    }
 
-				break;
-			}
-		}
+    public function dispatch(Action $action, Action $error)
+    {
+        $this->error = $error;
 
-		while ($action instanceof Action) {
-			$action = $this->execute($action);
-		}
-	}
+        foreach ($this->pre_actions as $pre_action) {
+            $result = $this->execute($pre_action);
 
-	private function execute(Action $action) {
-		$result = $action->execute($this->registry);
+            if ($result instanceof Action) {
+                $action = $result;
 
-		if ($result instanceof Action) {
-			return $result;
-		} 
-		
-		if ($result instanceof Exception) {
-			$action = $this->error;
-			
-			$this->error = null;
-			
-			return $action;
-		}
-	}
+                break;
+            }
+        }
+
+        while ($action instanceof Action) {
+            $action = $this->execute($action);
+        }
+    }
+
+    private function execute(Action $action)
+    {
+        $result = $action->execute($this->registry);
+
+        if ($result instanceof Action) {
+            return $result;
+        }
+
+        if ($result instanceof Exception) {
+            $action = $this->error;
+
+            $this->error = null;
+
+            return $action;
+        }
+    }
+
 }
