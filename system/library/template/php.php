@@ -1,26 +1,38 @@
 <?php
+
 namespace Template;
-final class PHP {
-	private $data = array();
-	
-	public function set($key, $value) {
-		$this->data[$key] = $value;
-	}
-	
-	public function render($template) {
-		$file = DIR_TEMPLATE . $template;
 
-		if (is_file($file)) {
-			extract($this->data);
+final class PHP
+{
+    private $registry;
+    private $data = array();
 
-			ob_start();
+    public function __construct($registry)
+    {
+        $this->registry = $registry;
+    }
 
-			require($file);
+    public function set($key, $value)
+    {
+        $this->data[$key] = $value;
+    }
 
-			return ob_get_clean();
-		}
+    public function render($template)
+    {
+        $file = DIR_TEMPLATE . $template;
 
-		trigger_error('Error: Could not load template ' . $file . '!');
-		exit();
-	}	
+        if (is_file($file)) {
+            extract($this->data);
+
+            ob_start();
+
+            require($file);
+
+            return ob_get_clean();
+        }
+
+        trigger_error('Error: Could not load template ' . $file . '!');
+        exit();
+    }
+
 }
